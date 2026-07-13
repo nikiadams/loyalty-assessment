@@ -1,0 +1,1714 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: 'Archivo Black', 'Poppins', sans-serif;
+    --font-body: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    --ink: #2B1010;
+    --ink-soft: #7A4A42;
+    --paper: #FFF8F3;
+    --paper-card: #FFFFFF;
+    --line: #F0D9CE;
+    --line-soft: #FBEDE5;
+    --coke-red: #C30508;
+    --coke-red-dark: #6D0B0B;
+    --coke-sienna: #D4080B;
+    --coke-salmon: #EF8065;
+    --coke-grey: #CFD6D3;
+    --coke-gold: #C69214;
+    font-family: var(--font-body);
+  }
+
+  * { box-sizing: border-box; }
+
+  body, #root, .lat-root {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .lat-root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* fizzy ambient bubbles */
+  .lat-bubble {
+    position: fixed;
+    bottom: -40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.7);
+    animation: lat-rise linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes lat-rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { transform: translateY(-110vh) translateX(10px); opacity: 0; }
+  }
+
+  .mono { font-family: 'IBM Plex Mono', 'SF Mono', Consolas, monospace; }
+
+  /* ---------- Top bar ---------- */
+  .lat-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px 30px;
+    background: linear-gradient(135deg, var(--coke-red) 0%, var(--coke-red-dark) 100%);
+    color: #fff;
+    position: relative;
+    z-index: 1;
+  }
+  .lat-ribbon-wave {
+    display: block;
+    width: 100%;
+    height: 16px;
+    margin-top: -1px;
+  }
+  .lat-topbar .brandmark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lat-topbar .brandmark .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    background: rgba(255,255,255,0.16);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .lat-topbar h1 {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: -0.01em;
+    font-style: normal;
+    text-transform: uppercase;
+  }
+  .lat-topbar .sub {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 3px;
+    font-weight: 500;
+  }
+  .lat-topbar .sub-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .lat-rename-btn {
+    font-family: inherit; font-size: 11px; font-weight: 600;
+    background: rgba(255,255,255,0.14); color: #fff; border: none;
+    padding: 3px 9px; border-radius: 10px; cursor: pointer; margin-top: 3px;
+  }
+  .lat-rename-btn:hover { background: rgba(255,255,255,0.24); }
+  .lat-topbar .sub-date {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+  .lat-topbar button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    background: #fff;
+    color: var(--coke-red-dark);
+    border: none;
+    padding: 9px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .lat-topbar button:hover { background: var(--coke-grey); }
+
+  .lat-body { flex: 1; display: flex; min-height: 0; }
+
+  /* ---------- Dashboard (audit list) ---------- */
+  .lat-dashboard {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 28px 80px;
+    width: 100%;
+  }
+  .lat-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+  }
+  .lat-dashboard-header h2 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    color: var(--coke-red);
+    letter-spacing: -0.01em;
+  }
+  .lat-dashboard-header p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .lat-newbtn {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 13px;
+    background: var(--coke-red);
+    color: #fff;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(195,5,8,0.3);
+  }
+  .lat-newbtn:hover { background: var(--coke-red-dark); }
+
+  .lat-audit-card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .lat-audit-card:hover { border-color: var(--ink); transform: translateY(-2px) scale(1.005); }
+  .lat-audit-card .name { font-weight: 600; font-size: 14px; }
+  .lat-audit-card .name-row { display: flex; align-items: center; gap: 10px; }
+  .lat-audit-card .pct-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--coke-red); background: var(--line-soft); padding: 2px 9px; border-radius: 10px;
+  }
+  .lat-audit-card .pct-badge.complete { color: #276749; background: #E6F4EC; }
+  .lat-audit-card .meta { font-size: 12px; color: var(--ink-soft); margin-top: 3px; }
+  .lat-audit-card .score-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--paper);
+    min-width: 54px;
+    text-align: center;
+  }
+  .lat-audit-card .progress-track {
+    width: 90px;
+    height: 5px;
+    background: var(--line-soft);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .lat-audit-card .progress-fill {
+    height: 100%;
+    background: var(--ink);
+  }
+  .lat-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .lat-card-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .lat-view-summary-btn {
+    font-family: inherit; font-size: 12px; font-weight: 700; background: var(--coke-gold);
+    color: #fff; border: none; padding: 7px 12px; border-radius: 14px; cursor: pointer;
+  }
+  .lat-view-summary-btn:hover { background: var(--coke-red); }
+  .lat-del {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 6px 8px;
+  }
+  .lat-del:hover { color: var(--accent-vl); }
+
+  /* ---------- New audit modal ---------- */
+  .lat-modal-backdrop {
+    position: fixed; inset: 0; background: rgba(20,24,30,0.5);
+    display: flex; align-items: center; justify-content: center; z-index: 50;
+  }
+  .lat-modal {
+    background: #fff; border-radius: 10px; padding: 26px; width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .lat-modal h3 { margin: 0 0 4px; font-size: 16px; }
+  .lat-modal p { margin: 0 0 16px; font-size: 12px; color: var(--ink-soft); }
+  .lat-modal input {
+    width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 6px; margin-bottom: 16px;
+  }
+  .lat-modal .row { display: flex; gap: 8px; justify-content: flex-end; }
+  .lat-congrats-modal { width: 380px; }
+  .lat-congrats-badge {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+  .lat-modal button {
+    font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 14px;
+    border-radius: 6px; cursor: pointer; border: 1px solid var(--line); background: #fff;
+  }
+  .lat-modal button.primary { background: var(--coke-red); color: #fff; border: none; border-radius: 20px; }
+
+  /* ---------- Workspace layout ---------- */
+  .lat-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: var(--paper-card);
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+  }
+  .lat-sidebar .back {
+    font-size: 12px; color: var(--ink-soft); background: none; border: none;
+    cursor: pointer; padding: 6px 10px; margin-bottom: 10px; font-family: inherit;
+  }
+  .lat-sidebar .back:hover { color: var(--ink); }
+  .lat-cat-tab {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 10px 10px; border-radius: 7px; cursor: pointer; margin-bottom: 6px;
+    border: 1px solid transparent;
+  }
+  .lat-cat-tab:hover { background: var(--paper); }
+  .lat-cat-tab.active { background: var(--paper); border-color: var(--line); }
+  .lat-cat-tab-toprow { display: flex; align-items: center; gap: 10px; }
+  .lat-cat-tab .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .lat-bottle-icon {
+    width: 18px; height: 32px; flex-shrink: 0;
+    transform-origin: 70% 100%;
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .lat-cat-tab.active .lat-bottle-icon,
+  .lat-bottle-icon.tilted {
+    transform: rotate(-32deg) translateX(-2px);
+  }
+  .lat-cat-tab:hover .lat-bottle-icon { transform: rotate(-12deg); }
+  .lat-cat-tab .label { flex: 1; min-width: 0; }
+  .lat-cat-tab .label .name { font-size: 12.5px; font-weight: 600; line-height: 1.3; }
+  .lat-cat-tab .label .code { font-size: 10px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
+  .lat-cat-tab .count {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-soft);
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 1px 7px;
+  }
+  .lat-cat-tab-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10.5px; color: var(--ink-soft); padding: 0 2px;
+  }
+  .lat-cat-tab-dots {
+    display: flex; flex-wrap: wrap; gap: 4px; padding: 0 2px;
+  }
+  .lat-cat-tab-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--line);
+    cursor: pointer; flex-shrink: 0;
+  }
+  .lat-cat-tab-dot:hover { transform: scale(1.3); }
+
+  .lat-sidebar-composite {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; margin: 10px 0 16px;
+  }
+  .lat-sidebar-composite-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; font-weight: 700; margin-bottom: 8px;
+  }
+  .lat-sidebar-composite-top span.mono { font-family: 'IBM Plex Mono', monospace; font-size: 18px; }
+  .lat-sidebar-composite-track {
+    height: 6px; background: var(--line-soft); border-radius: 3px; overflow: hidden; margin-bottom: 6px;
+  }
+  .lat-sidebar-composite-fill { height: 100%; background: var(--coke-red); border-radius: 3px; }
+  .lat-sidebar-composite-sub { font-size: 10.5px; color: var(--ink-soft); }
+
+  .lat-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px 100px;
+  }
+  .lat-main-full {
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ---------- Scorecard summary ---------- */
+  .lat-scorecard {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+  }
+  .lat-scorecard-top {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  .lat-scorecard-top h3 { margin: 0; font-size: 14px; }
+  .lat-composite {
+    font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 700;
+  }
+  .lat-composite .of5 { font-size: 13px; color: var(--ink-soft); font-weight: 500; }
+  .lat-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .lat-bar-row .cat-label {
+    width: 150px; font-size: 11.5px; color: var(--ink-soft); flex-shrink: 0;
+  }
+  .lat-bar-track {
+    flex: 1; height: 8px; background: var(--paper); border-radius: 4px; overflow: hidden;
+  }
+  .lat-bar-fill { height: 100%; border-radius: 4px; }
+  .lat-bar-score {
+    width: 30px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft);
+  }
+
+  .lat-copybtn {
+    font-family: inherit; font-size: 12px; font-weight: 600; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; cursor: pointer;
+  }
+  .lat-copybtn:hover { border-color: var(--ink); }
+
+  /* ---------- Category header ---------- */
+  .lat-cat-header { margin-bottom: 18px; }
+
+  .lat-flip-progress {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .lat-flip-position {
+    font-family: var(--font-display); font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--ink-soft);
+  }
+  .lat-flip-remaining {
+    font-size: 12.5px; font-weight: 700; color: var(--coke-red);
+    background: var(--line-soft); padding: 4px 10px; border-radius: 12px;
+  }
+  .lat-flip-remaining.all-done { color: #276749; background: #E6F4EC; }
+
+  .lat-flip-dots { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .lat-flip-dot {
+    width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line);
+    background: #fff; cursor: pointer; padding: 0;
+  }
+  .lat-flip-dot.current { box-shadow: 0 0 0 3px rgba(195,5,8,0.18); border-color: var(--coke-red); }
+  .lat-flip-dot.scored { border-width: 0; }
+
+  .lat-flip-nav {
+    display: flex; justify-content: space-between; margin: 18px 0 32px;
+  }
+  .lat-flip-btn {
+    font-family: var(--font-body); font-weight: 700; font-size: 13.5px;
+    padding: 10px 20px; border-radius: 22px; border: 2px solid var(--ink);
+    background: #fff; color: var(--ink); cursor: pointer;
+  }
+  .lat-flip-btn.primary { background: var(--coke-red); color: #fff; }
+  .lat-flip-btn.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .lat-cat-header .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .lat-cat-header h2 { margin: 0; font-size: 22px; font-family: var(--font-display); text-transform: uppercase; letter-spacing: -0.01em; }
+  .lat-cat-header .desc { font-size: 13px; color: var(--ink-soft); margin-top: 4px; max-width: 640px; }
+  .lat-cat-time-chip {
+    display: inline-block; font-size: 11.5px; font-weight: 700; margin-top: 8px;
+    background: var(--line-soft); padding: 4px 10px; border-radius: 12px;
+  }
+
+  /* ---------- Criterion card ---------- */
+  .lat-crit {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--crit-color, var(--ink));
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .lat-crit-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .lat-crit-id {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px; color: #fff; flex-shrink: 0;
+  }
+  .lat-crit-name { font-size: 14px; font-weight: 700; margin: 0 0 3px; font-family: var(--font-body); }
+  .lat-crit-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+
+  .lat-score-row { display: flex; gap: 8px; margin: 12px 0 4px; align-items: center; }
+  .lat-score-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--line);
+    background: #fff; font-family: 'IBM Plex Mono', monospace; font-weight: 800; font-size: 13px;
+    cursor: pointer; color: var(--ink-soft); transition: transform 0.12s, background 0.12s;
+    box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4px var(--line-soft);
+  }
+  .lat-score-btn:hover { border-color: var(--coke-red); color: var(--coke-red); transform: translateY(-2px) rotate(-4deg); }
+  .lat-score-btn.selected {
+    background: var(--coke-red); color: #fff; border-color: var(--coke-red-dark);
+    transform: scale(1.1); box-shadow: inset 0 0 0 3px var(--coke-red), inset 0 0 0 4px rgba(255,255,255,0.4);
+  }
+  .lat-mood {
+    font-size: 20px; margin-left: 6px; animation: lat-pop 0.25s ease;
+  }
+  @keyframes lat-pop {
+    0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(4deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  .lat-rubric-toggle {
+    font-size: 11.5px; color: var(--ink-soft); background: none; border: none; cursor: pointer;
+    padding: 0; text-decoration: underline; text-underline-offset: 2px;
+  }
+  .lat-rubric-box {
+    background: var(--paper); border-radius: 6px; padding: 10px 12px; margin-top: 8px; font-size: 12px;
+  }
+  .lat-rubric-line { display: flex; gap: 8px; margin-bottom: 5px; }
+  .lat-rubric-line .n { font-family: 'IBM Plex Mono', monospace; font-weight: 700; flex-shrink: 0; width: 14px; }
+  .lat-rubric-line.current { font-weight: 600; }
+
+  .lat-help-toggle {
+    font-size: 12px; font-weight: 700; color: var(--coke-red); background: var(--line-soft);
+    border: none; border-radius: 14px; cursor: pointer; padding: 6px 12px; margin: 2px 0 8px;
+  }
+  .lat-help-toggle:hover { background: #FBE0D4; }
+  .lat-help-box {
+    background: #FFF3ED; border: 1px dashed var(--coke-salmon); border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 10px; font-size: 13px; line-height: 1.45;
+  }
+  .lat-help-row { margin-bottom: 8px; }
+  .lat-help-row:last-child { margin-bottom: 0; }
+  .lat-help-label {
+    display: block; font-size: 10.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--coke-red); margin-bottom: 2px;
+  }
+
+  .lat-status-row { display: flex; gap: 6px; margin: 10px 0; }
+  .lat-status-pill {
+    font-size: 11.5px; font-weight: 600; padding: 5px 10px; border-radius: 20px;
+    border: 1px solid var(--line); background: #fff; cursor: pointer; color: var(--ink-soft);
+  }
+  .lat-status-pill.selected.found { background: #2F855A; color: #fff; border-color: #2F855A; }
+  .lat-status-pill.selected.partial { background: var(--coke-gold); color: #fff; border-color: var(--coke-gold); }
+  .lat-status-pill.selected.notfound { background: var(--coke-red-dark); color: #fff; border-color: var(--coke-red-dark); }
+
+  .lat-field { margin-top: 8px; }
+  .lat-field label { font-size: 11px; color: var(--ink-soft); font-weight: 600; display: block; margin-bottom: 4px; }
+  .lat-field textarea {
+    width: 100%; font-family: inherit; font-size: 13px; padding: 8px 10px;
+    border: 1px solid var(--line); border-radius: 6px; resize: vertical; min-height: 44px;
+  }
+  .lat-ai-note {
+    margin-top: 10px; font-size: 11px; color: var(--ink-soft); background: var(--paper);
+    border: 1px dashed var(--line); border-radius: 6px; padding: 8px 10px;
+  }
+  .lat-suggest-btn {
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 700;
+    background: linear-gradient(135deg, var(--coke-gold) 0%, var(--coke-red) 100%);
+    color: #fff; border: none; border-radius: 16px; padding: 7px 14px;
+    cursor: pointer; margin: 4px 0 10px;
+  }
+  .lat-suggest-btn:hover { opacity: 0.9; }
+  .lat-suggest-btn.loading { opacity: 0.7; cursor: default; }
+
+  .lat-summary-nav-btn {
+    display: block; width: 100%; font-family: var(--font-body); font-weight: 700; font-size: 12.5px;
+    padding: 10px 12px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 14px;
+    text-align: left;
+  }
+  .lat-summary-nav-btn.locked { background: var(--line-soft); color: var(--ink-soft); cursor: default; }
+  .lat-summary-nav-btn.unlocked { background: var(--coke-gold); color: #fff; }
+  .lat-summary-nav-btn.unlocked.active { background: var(--coke-red); }
+  .lat-print-nav-btn { background: var(--ink); color: #fff; margin-top: -8px; }
+  .lat-print-nav-btn:hover { background: var(--coke-red-dark); }
+
+  .lat-summary-controls {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 8px;
+  }
+  .lat-print-hint { font-size: 11px; color: var(--ink-soft); width: 100%; text-align: right; }
+
+  .lat-report {
+    background: #fff; border-radius: 10px; border: 1px solid var(--line);
+    overflow: hidden; max-width: 900px;
+  }
+  .lat-report-header {
+    background: linear-gradient(135deg, var(--coke-red) 0%, var(--coke-red-dark) 100%);
+    color: #fff; padding: 28px 30px;
+  }
+  .lat-report-title-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .lat-report-eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.1em; opacity: 0.75; margin-bottom: 4px;
+  }
+  .lat-report-header h1 { font-family: var(--font-display); font-size: 30px; margin: 0; text-transform: uppercase; }
+  .lat-report-date { font-size: 12.5px; opacity: 0.8; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; }
+  .lat-report-badge {
+    border-radius: 12px; padding: 12px 20px; text-align: center; min-width: 130px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  .lat-report-badge-icon { font-size: 26px; line-height: 1; }
+  .lat-report-badge-score { font-family: 'IBM Plex Mono', monospace; font-weight: 800; font-size: 20px; color: #fff; margin-top: 4px; }
+  .lat-report-badge-label { font-size: 11px; font-weight: 700; color: #fff; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  .lat-report-summary { padding: 24px 30px; border-bottom: 1px solid var(--line); }
+  .lat-report-summary-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--coke-red); font-weight: 700; margin-bottom: 8px;
+  }
+  .lat-report-summary-text { font-size: 14.5px; line-height: 1.6; color: var(--ink); margin: 0 0 10px; }
+  .lat-report-ai-tag { display: inline-block; font-size: 11px; color: var(--ink-soft); margin-bottom: 8px; }
+
+  .lat-report-divider {
+    display: flex; align-items: center; gap: 14px; padding: 14px 30px;
+    color: #fff; break-inside: avoid; break-after: avoid;
+  }
+  .lat-report-divider-title { font-family: var(--font-display); font-size: 17px; text-transform: uppercase; }
+  .lat-report-divider-sub { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+  .lat-report-divider-score { font-family: 'IBM Plex Mono', monospace; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+
+  .lat-report-row {
+    padding: 14px 30px; border-bottom: 1px solid var(--line-soft); break-inside: avoid;
+  }
+  .lat-report-row-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  .lat-report-row-name { font-weight: 700; font-size: 13.5px; flex: 1; min-width: 200px; }
+  .lat-report-row-score { font-family: 'IBM Plex Mono', monospace; font-weight: 800; font-size: 13px; }
+  .lat-report-row-status { font-size: 11px; font-weight: 600; color: var(--ink-soft); background: var(--line-soft); padding: 2px 8px; border-radius: 10px; }
+  .lat-report-row-detail { font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); margin-top: 3px; }
+  .lat-report-row-label { font-weight: 700; color: var(--ink); }
+  .lat-report-row-detail em { color: #B0A8A2; font-style: italic; }
+
+  @media print {
+    .lat-topbar, .lat-sidebar, .lat-ribbon-wave, .lat-bubble, .no-print { display: none !important; }
+    .lat-main { padding: 0 !important; }
+    .lat-body { display: block !important; }
+    .lat-report { border: none !important; max-width: 100% !important; }
+    .lat-report-divider { page-break-before: always; }
+    .lat-report-header, .lat-report-summary { page-break-before: avoid; }
+    body, .lat-root { background: #fff !important; }
+  }
+
+  .lat-toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; font-size: 13px; padding: 10px 18px;
+    border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 100;
+  }
+
+  .lat-confetti-piece {
+    position: fixed; top: -10px; width: 8px; height: 8px; z-index: 200;
+    animation: lat-fall linear forwards;
+  }
+  @keyframes lat-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(540deg); opacity: 0.3; }
+  }
+</style>
+
+<div id="lat-app" class="lat-root"></div>
+
+<script>
+(function(){
+
+  var CATEGORIES = [
+    { key: 'DX', name: 'Digital Experience', sub: 'Omnichannel', color: '#C30508', icon: '\ud83d\udcf1', time: '~8 min', desc: 'How easily a member can enroll, check status, and redeem across every channel the program touches.' },
+    { key: 'PS', name: 'Program Structure', sub: 'Earn / Burn / Tiering', color: '#6D0B0B', icon: '\u2699\ufe0f', time: '~8 min', desc: 'The mechanics underneath the program: how points are earned, spent, and how tiers are structured.' },
+    { key: 'ON', name: 'Onboarding & Lifecycle', sub: 'Join journey \u2014 Step 3.5', color: '#EF8065', icon: '\ud83d\udc4b', time: '~10 min', desc: 'What happens right after someone joins, through ongoing milestones, to win-back if they lapse.' },
+    { key: 'PZ', name: 'Personalization & Data', sub: '', color: '#D4080B', icon: '\ud83c\udfaf', time: '~5 min', desc: 'Whether member data is actually used to tailor the experience, or just collected and left unused.' },
+    { key: 'CM', name: 'Communication & Engagement', sub: '', color: '#A83232', icon: '\ud83d\udcac', time: '~5 min', desc: 'Ongoing engagement mechanics beyond onboarding \u2014 notifications, gamification, ambient touchpoints.' },
+    { key: 'VL', name: 'Value Perception & Financial', sub: '', color: '#C69214', icon: '\ud83d\udc8e', time: '~7 min', desc: 'Whether the rewards feel worth earning, and whether the program is financially sustainable.' },
+    { key: 'BA', name: 'Brand Alignment', sub: '', color: '#2B1010', icon: '\u2728', time: '~5 min', desc: 'Whether the program feels distinctly on-brand, or like a generic points system with a logo on it.' }
+  ];
+
+  var SCORE_MOOD = { 1: '\ud83d\ude2c', 2: '\ud83d\ude15', 3: '\ud83d\ude10', 4: '\ud83d\ude42', 5: '\ud83e\udd29' };
+
+  var RUBRIC_SCALE = { 1: 'Absent / broken', 2: 'Present but poor', 3: 'Functional, basic', 4: 'Strong', 5: 'Best-in-class' };
+
+  var CRITERIA = [
+    { id: 'DX-01', cat: 'DX', name: 'Enrollment under 2 minutes, minimal fields',
+      help: { what: 'How much effort does it take someone to sign up in the first place?', example: 'Signing up with just an email in one screen is low friction. Requiring 8 fields (name, phone, address, birthday...) before they can even see the program is high friction.' },
+      rubric: { 1:'Requires a separate site, 6+ fields, or fails to complete', 2:'Completable but 5+ fields or unclear progress', 3:'Completable in-app under 5 min, reasonable fields', 4:'Under 2 min, minimal fields, clear progress', 5:'Under 1 min, SSO option, immediate reward confirmation' } },
+    { id: 'DX-02', cat: 'DX', name: 'Multiple earn channels are shown',
+      help: { what: 'Does the app tell members the different ways they can actually earn points?', example: 'A banner saying "Earn points in-store, online, or in-app" is clear. An app that never mentions how to earn beyond one method is not.' },
+      rubric: { 1:'No earn channels indicated anywhere', 2:'One channel mentioned in text only', 3:'Two channels shown with basic icons', 4:'Three+ channels with clear iconography', 5:'All channels shown contextually at point of earning' } },
+    { id: 'DX-03', cat: 'DX', name: 'Balance/tier visible in \u22641 screen',
+      help: { what: 'Once the app is open, how many taps does it take to see your points balance or tier?', example: 'Balance shown right on the home screen = great. Menu > Account > Rewards > Balance = too many steps.' },
+      rubric: { 1:'Requires 3+ taps or search', 2:'Requires 2 taps, buried in menu', 3:'Visible within 1 tap from home', 4:'Visible directly on home screen', 5:'Visible on home plus persistent header badge' } },
+    { id: 'DX-04', cat: 'DX', name: 'Redemption in \u22643 taps',
+      help: { what: 'How many taps does it take to actually redeem a reward, start to finish?', example: 'Tap Rewards > tap item > tap Redeem (3 taps) is good. Needing 6+ confusing steps is a problem.' },
+      rubric: { 1:'Broken, unclear, or 6+ taps', 2:'5-6 taps, unclear next steps', 3:'4-5 taps, functional not streamlined', 4:'3 taps, clear CTA each step', 5:'1-2 taps, one-click redemption' } },
+    { id: 'DX-05', cat: 'DX', name: 'Cross-channel consistency (app/web/in-store)',
+      help: { what: 'Does your balance and status look the same everywhere \u2014 app, website, and in-store?', example: 'If the app shows 500 points but the in-store cashier system shows 350, that\u2019s a broken, inconsistent experience.' },
+      rubric: { 1:'Only works in one channel', 2:'Works in 2 channels, inconsistent sync', 3:'Works across channels, occasional sync delay', 4:'Consistent real-time sync across channels', 5:'Consistent sync plus channel-specific optimizations' } },
+
+    { id: 'PS-01', cat: 'PS', name: 'Earn rate is clearly stated',
+      help: { what: 'Can a member easily find out how many points they get for what they spend?', example: '"Earn 10 points per $1" shown near checkout is clear. Burying the earn rate in a legal PDF is not.' },
+      rubric: { 1:'Not disclosed anywhere accessible', 2:'Disclosed only in T&Cs fine print', 3:'Disclosed in FAQ/help section', 4:'Disclosed near point of transaction', 5:'Shown in real time as a calculation' } },
+    { id: 'PS-02', cat: 'PS', name: 'Redemption catalog offers a range of values',
+      help: { what: 'Are there rewards at different point levels, so both casual and heavy members have something worth redeeming?', example: 'A catalog with a free drink at 100 points, a free meal at 500, and a bigger experience at 2000 is a good range. Only one $50 reward is not.' },
+      rubric: { 1:'Single redemption option only', 2:'2-3 options at one price point', 3:'Moderate range (low/mid/high)', 4:'Wide range including experiential/partner rewards', 5:'Wide range plus personalized suggestions' } },
+    { id: 'PS-03', cat: 'PS', name: 'Tier thresholds/benefits visible without deep navigation',
+      help: { what: 'Can members easily see what tier they\u2019re in and what the next one requires?', example: 'A progress bar showing "750/1000 to Gold" is clear. Having to email support to find out your tier is not.' },
+      rubric: { 1:'Not available, requires contacting support', 2:'Only in a separate document/PDF', 3:'Dedicated tiers page, 2+ taps away', 4:'Summarized on main screen, detail 1 tap away', 5:'Fully visible incl. "X away from next tier"' } },
+    { id: 'PS-04', cat: 'PS', name: 'Points expiration policy clearly disclosed',
+      help: { what: 'Do members know if/when their points expire, and is that easy to find?', example: '"Points expire 12 months after your last purchase" shown right on the balance screen is clear disclosure.' },
+      rubric: { 1:'Expires with no disclosure anywhere', 2:'Disclosed only in T&Cs', 3:'Disclosed in account settings/FAQ', 4:'Disclosed near balance display', 5:'Active countdown/warning before points lapse' } },
+    { id: 'PS-05', cat: 'PS', name: 'Tier progression feels achievable',
+      help: { what: 'Is it realistic for an average member to actually reach higher tiers?', example: 'If the top tier requires $10,000/year but the average member spends $200/year, that tier motivates no one.' },
+      rubric: { 1:'Top tier unrealistic for target audience', 2:'Large gaps, little mid-tier incentive', 3:'Reasonable gaps, no visible momentum', 4:'Clear achievable path, visible progress', 5:'Achievable path plus acceleration mechanisms' } },
+
+    { id: 'ON-01', cat: 'ON', name: 'Welcome message timing & clarity',
+      help: { what: 'When someone joins, do they get a prompt message explaining how the program actually works?', example: 'A welcome email within an hour saying "here\u2019s how to earn, here\u2019s how to redeem, here\u2019s your first bonus" is strong. A generic "Thanks for signing up" is weak.' },
+      rubric: { 1:'No welcome message sent', 2:'Sent but generic/delayed 48h+', 3:'Sent within 24h, basic explanation', 4:'Sent within hours, clear and engaging', 5:'Immediate, personalized, sets up next action' } },
+    { id: 'ON-02', cat: 'ON', name: 'Channels are coordinated, not duplicated',
+      help: { what: 'Are email, text, and push working together, or all repeating the same message?', example: 'Email explains the program in detail, then a text a few days later nudges "you have unused points" \u2014 that\u2019s coordinated. Getting the identical message on 3 channels at once is not.' },
+      rubric: { 1:'Identical message blasted on all channels at once', 2:'Some overlap/duplication', 3:'Distinct purposes, not tightly sequenced', 4:'Well-sequenced, each channel has a clear role', 5:'Fully orchestrated around member behavior' } },
+    { id: 'ON-03', cat: 'ON', name: 'First-earn / first-redemption nudge exists',
+      help: { what: 'If someone joins but doesn\u2019t use the program right away, does anything prompt them to take that first action?', example: '"You haven\u2019t earned any points yet \u2014 here\u2019s a bonus for your first purchase," sent a few days after signup.' },
+      rubric: { 1:'No nudge exists', 2:'Generic reminder, not tailored', 3:'Basic nudge for inactive new members', 4:'Nudge includes an incentive', 5:'Personalized nudge, intelligently timed' } },
+    { id: 'ON-04', cat: 'ON', name: 'Milestone messaging (tiers, birthdays, anniversaries)',
+      help: { what: 'Does the program acknowledge meaningful moments, not just transactions?', example: '"Happy birthday! Here\u2019s 100 bonus points" or "You just reached Gold status!"' },
+      rubric: { 1:'No milestone messaging', 2:'Only one type exists', 3:'Covers 2 milestone types', 4:'Covers most types, reasonably personalized', 5:'Comprehensive, feels celebratory not templated' } },
+    { id: 'ON-05', cat: 'ON', name: 'Win-back sequence for lapsed members',
+      help: { what: 'If a member stops engaging, does the brand try to bring them back before they\u2019re gone for good?', example: 'An email after 60 days of inactivity offering a bonus to return, with a stronger incentive at 90 days if they still haven\u2019t.' },
+      rubric: { 1:'No sequence, lapsed members go silent', 2:'One generic "we miss you", no incentive', 3:'Basic sequence, defined trigger, one follow-up', 4:'Multi-touch with escalating incentive', 5:'Multi-touch, personalized, urgency + strong incentive' } },
+    { id: 'ON-06', cat: 'ON', name: 'Expiration warning sent proactively',
+      help: { what: 'Before points expire, does the member get enough notice to actually use them?', example: '"Your 500 points expire in 2 weeks \u2014 redeem now" vs. points just silently disappearing with no warning.' },
+      rubric: { 1:'No warning, points simply expire', 2:'Warning too close to expiration to act', 3:'Reasonable notice (1-2 weeks)', 4:'Reasonable notice plus clear CTA', 5:'Staged warnings with one-tap redeem path' } },
+
+    { id: 'PZ-01', cat: 'PZ', name: 'Offers tailored to member behavior',
+      help: { what: 'Are offers based on what a member actually buys, or does everyone see the same thing?', example: 'A frequent coffee buyer getting a coffee-specific bonus, vs. every member seeing the identical generic banner.' },
+      rubric: { 1:'All members see identical generic offers', 2:'Minimal segmentation (new vs existing only)', 3:'Basic behavioral segmentation', 4:'Offers reflect purchase history meaningfully', 5:'Offers dynamically adjust to recent behavior' } },
+    { id: 'PZ-02', cat: 'PZ', name: 'Purchase history used to personalize',
+      help: { what: 'Is past purchase data actually used for anything, or just stored and ignored?', example: '"Because you bought X, here\u2019s a related offer" shows active use. Data sitting unused in the backend does not.' },
+      rubric: { 1:'No visible use of purchase history', 2:'History viewable but unused', 3:'History informs basic recommendations', 4:'History actively drives personalized offers', 5:'History drives offers, transparently shown to member' } },
+    { id: 'PZ-03', cat: 'PZ', name: 'Member can set preferences',
+      help: { what: 'Can a member tell the program what they care about \u2014 categories, contact frequency, etc.?', example: 'A settings screen where you can choose "food offers" over "merchandise offers," or set emails to weekly instead of daily.' },
+      rubric: { 1:'No preference controls available', 2:'Limited to comms opt-in/out', 3:'Category/interest preferences available', 4:'Granular preferences (channel, frequency, category)', 5:'Preferences visibly shape ongoing experience' } },
+
+    { id: 'CM-01', cat: 'CM', name: 'Real-time balance change notification',
+      help: { what: 'When a member earns or spends points, do they find out quickly?', example: 'A push notification right after purchase saying "You just earned 50 points!" vs. having to check manually days later.' },
+      rubric: { 1:'No notification of balance changes', 2:'Delayed 24h+', 3:'Within a few hours', 4:'Near-real-time', 5:'Real-time plus contextual next-step prompt' } },
+    { id: 'CM-02', cat: 'CM', name: 'Notifications are relevant, not spam',
+      help: { what: 'Do notifications feel useful, or do they feel like spam?', example: '"Your favorite reward is back in stock" is relevant. Five unrelated promo blasts a week feels like spam.' },
+      rubric: { 1:'Purely promotional, unrelated to activity', 2:'Mostly promotional, occasional relevance', 3:'Mixed relevance', 4:'Mostly relevant to member activity/status', 5:'Highly relevant, personalized, well-paced' } },
+    { id: 'CM-03', cat: 'CM', name: 'Non-transactional engagement exists',
+      help: { what: 'Is there anything to do besides just earning and redeeming \u2014 games, challenges, fun moments?', example: 'A monthly challenge like "buy 3 times this month for bonus points" or a spin-the-wheel feature.' },
+      rubric: { 1:'No mechanics beyond earn/redeem', 2:'One-off feature, rarely updated', 3:'Occasional challenges/bonus events', 4:'Regular, varied engagement mechanics', 5:'Engagement is core, clearly tied to brand identity' } },
+
+    { id: 'VL-01', cat: 'VL', name: 'Reward value is competitive',
+      help: { what: 'Compared to similar programs in the same industry, do the rewards feel like a good deal?', example: 'If a competitor gives a free item after $100 spent, and this program needs $300 for the same value, it\u2019s below benchmark.' },
+      rubric: { 1:'Significantly below category benchmark', 2:'Below benchmark', 3:'At benchmark/parity', 4:'Above benchmark', 5:'Best-in-category, clearly differentiated' } },
+    { id: 'VL-02', cat: 'VL', name: 'Progress-to-reward is visible',
+      help: { what: 'Can a member easily tell how close they are to their next reward, without doing the math themselves?', example: '"150 points until your next free item" shown directly on the balance screen.' },
+      rubric: { 1:'No indication of progress', 2:'Requires manual calculation', 3:'Basic progress bar available', 4:'Clear progress bar with next-reward context', 5:'Progress shown with proactive nudges' } },
+    { id: 'VL-03', cat: 'VL', name: 'Program cost is sustainable (internal metric)',
+      help: { what: 'This one is for the business side, not the member experience: is the program financially healthy?', example: 'Tracking redemption rate and breakage (unused points) against the cost of rewards issued, to confirm the program isn\u2019t losing money.' },
+      rubric: { 1:'Data unavailable or running at a loss, no plan', 2:'Unsustainable trend, no mitigation', 3:'Roughly break-even, no optimization', 4:'Healthy margin, some optimization', 5:'Actively monitored against financial targets' } },
+
+    { id: 'BA-01', cat: 'BA', name: 'Visual design/tone feels on-brand',
+      help: { what: 'Does the program look and feel like it belongs to this brand, or could you swap the logo and it\u2019d look like anyone\u2019s program?', example: 'Custom colors, illustration style, and voice that feel distinctly "them," vs. a generic templated rewards UI with a logo pasted on top.' },
+      rubric: { 1:'Generic template UI, no brand personality', 2:'Brand colors present, tone feels generic', 3:'Consistent visual identity, generic copy', 4:'Strong visual and tonal consistency', 5:'Inseparable from brand identity' } },
+    { id: 'BA-02', cat: 'BA', name: 'Naming/theme reinforces brand',
+      help: { what: 'Does the program have its own identity, or does it just use generic words like "points" and "rewards"?', example: 'A custom currency name members recognize and use themselves, vs. an app that just says "You have 500 points."' },
+      rubric: { 1:'Generic "points/rewards" language only', 2:'Custom name exists, used inconsistently', 3:'Custom name used consistently, limited depth', 4:'Name and theme reinforced throughout', 5:'Memorable, ownable, members refer to it by name' } },
+    { id: 'BA-03', cat: 'BA', name: 'Gamification reflects brand personality',
+      help: { what: 'If there are game-like elements (badges, streaks, animations), do they feel like they belong to this brand specifically?', example: 'Themed badges tied to the brand\u2019s world, vs. generic trophy icons that could belong to any app.' },
+      rubric: { 1:'No gamification elements present', 2:'Generic gamification, no brand connection', 3:'Some brand-flavored gamification, inconsistent', 4:'Consistently reflects brand personality', 5:'Distinctive, memorable, drives word-of-mouth' } }
+  ];
+
+  var STATUS_OPTIONS = [
+    { key: 'found', label: 'Found' },
+    { key: 'partial', label: 'Partial' },
+    { key: 'notfound', label: 'Not Found' }
+  ];
+
+  function bottleIconSVG(color, extraClass){
+    return '<svg class="lat-bottle-icon ' + (extraClass || '') + '" viewBox="0 0 24 44" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="9.5" y="0" width="5" height="3.5" rx="1.2" fill="' + color + '"/>' +
+      '<path d="M8.5 3.5 H15.5 V9 C15.5 10.5 17.5 11.5 17.5 15 V39 C17.5 41.5 15.8 43 13.2 43 H10.8 C8.2 43 6.5 41.5 6.5 39 V15 C6.5 11.5 8.5 10.5 8.5 9 Z" fill="' + color + '"/>' +
+      '<rect x="7.3" y="21" width="9.4" height="3" rx="1" fill="rgba(255,255,255,0.35)"/>' +
+      '</svg>';
+  }
+
+  var catByKey = {};
+  CATEGORIES.forEach(function(c){ catByKey[c.key] = c; });
+
+  var state = {
+    view: 'dashboard',   // 'dashboard' | 'audit' | 'summary'
+    audits: [],          // {id, clientName, createdAt}
+    currentAuditId: null,
+    currentAuditData: null, // {clientName, createdAt, entries: {critId: {score, status, notes, action}}, aiSummary}
+    activeCat: 'DX',
+    expandedRubric: {},
+    expandedHelp: {},
+    critIndex: {},
+    showModal: false,
+    modalName: '',
+    showRenameModal: false,
+    renameValue: '',
+    generatingSummary: false,
+    celebratedComplete: {},
+    showCongratsModal: false,
+    summaryMode: false,
+    toast: null
+  };
+
+  function uid(){ return 'a' + Date.now() + Math.random().toString(36).slice(2,8); }
+
+  function fireConfetti(color){
+    var colors = [color, '#C30508', '#C69214', '#FFF8F3', '#EF8065'];
+    for (var i = 0; i < 26; i++){
+      var piece = document.createElement('div');
+      piece.className = 'lat-confetti-piece';
+      piece.style.left = (Math.random() * 100) + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      var duration = 1.4 + Math.random() * 1.2;
+      piece.style.animationDuration = duration + 's';
+      piece.style.animationDelay = (Math.random() * 0.3) + 's';
+      document.body.appendChild(piece);
+      (function(p, d){ setTimeout(function(){ p.remove(); }, (d + 0.5) * 1000); })(piece, duration);
+    }
+  }
+
+  var celebratedCats = {};
+  function maybeCelebrate(auditId, cat, stats){
+    var key = auditId + ':' + cat.key;
+    if (stats.done === stats.total && stats.total > 0 && !celebratedCats[key]){
+      celebratedCats[key] = true;
+      fireConfetti(cat.color);
+      showToast(cat.icon + ' ' + cat.name + ' fully scored!');
+    }
+  }
+
+  function showToast(msg){
+    state.toast = msg;
+    render();
+    setTimeout(function(){ state.toast = null; render(); }, 2200);
+  }
+
+  // ---------------- storage ----------------
+  function loadAuditsList(){
+    window.storage.list('audit-data:', true).then(function(res){
+      var keys = (res && res.keys) || [];
+      if (keys.length === 0){ state.audits = []; render(); return; }
+      Promise.all(keys.map(function(k){
+        var id = k.slice('audit-data:'.length);
+        return window.storage.get(k, true).then(function(r){
+          try {
+            var data = JSON.parse(r.value);
+            var stats = compositeStats(data.entries || {});
+            return { id: id, clientName: data.clientName, createdAt: data.createdAt, doneCount: stats.done, totalCount: stats.total };
+          } catch(e){ return null; }
+        }).catch(function(){ return null; });
+      })).then(function(list){
+        state.audits = list.filter(Boolean).sort(function(a,b){ return b.createdAt - a.createdAt; });
+        render();
+      });
+    }).catch(function(){ state.audits = []; render(); });
+  }
+
+  function createAudit(name){
+    var id = uid();
+    var data = { clientName: name, createdAt: Date.now(), entries: {} };
+    var listEntry = { id: id, clientName: name, createdAt: data.createdAt, doneCount: 0, totalCount: CRITERIA.length };
+
+    // Optimistic: switch into the workspace immediately, don't block on storage.
+    state.audits.unshift(listEntry);
+    openAudit(id, data);
+
+    try {
+      window.storage.set('audit-data:' + id, JSON.stringify(data), true).then(function(){
+        showToast('Audit created and saved');
+      }).catch(function(err){
+        showToast('Created, but saving failed \u2014 your data may not persist (' + (err && err.message ? err.message : 'storage error') + ')');
+      });
+    } catch (err){
+      showToast('Created, but saving failed \u2014 storage unavailable');
+    }
+  }
+
+  function openAudit(id, preloaded, toSummary){
+    state.currentAuditId = id;
+    state.view = 'audit';
+    state.activeCat = 'DX';
+    state.summaryMode = !!toSummary;
+    if (preloaded){
+      state.currentAuditData = preloaded;
+      render();
+      return;
+    }
+    window.storage.get('audit-data:' + id, true).then(function(r){
+      state.currentAuditData = JSON.parse(r.value);
+      render();
+    }).catch(function(){
+      state.currentAuditData = { clientName: '', createdAt: Date.now(), entries: {} };
+      render();
+    });
+  }
+
+  var saveTimer = null;
+  function persistCurrentAudit(){
+    if (!state.currentAuditId || !state.currentAuditData) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      window.storage.set('audit-data:' + state.currentAuditId, JSON.stringify(state.currentAuditData), true)
+        .catch(function(){ showToast('Save failed \u2014 check connection'); });
+
+      var stats = compositeStats(state.currentAuditData.entries);
+      var listEntry = state.audits.filter(function(a){ return a.id === state.currentAuditId; })[0];
+      if (listEntry){
+        listEntry.doneCount = stats.done;
+        listEntry.totalCount = stats.total;
+        listEntry.clientName = state.currentAuditData.clientName;
+      }
+    }, 350);
+  }
+
+  function deleteAudit(id, ev){
+    ev.stopPropagation();
+    if (!confirm('Delete this audit? This cannot be undone.')) return;
+    Promise.all([
+      window.storage.delete('audit-data:' + id, true).catch(function(){}),
+      window.storage.delete('audit-meta:' + id, true).catch(function(){}) // cleanup of legacy records, if any
+    ]).then(function(){
+      state.audits = state.audits.filter(function(a){ return a.id !== id; });
+      render();
+    });
+  }
+
+  function renameAudit(newName){
+    newName = newName.trim();
+    if (!newName || !state.currentAuditId || !state.currentAuditData) return;
+    state.currentAuditData.clientName = newName;
+    var listEntry = state.audits.filter(function(a){ return a.id === state.currentAuditId; })[0];
+    if (listEntry) listEntry.clientName = newName;
+    state.showRenameModal = false;
+    render();
+    window.storage.set('audit-data:' + state.currentAuditId, JSON.stringify(state.currentAuditData), true).then(function(){
+      showToast('Audit renamed');
+    }).catch(function(){
+      showToast('Renamed here, but saving failed \u2014 may revert on reload');
+    });
+  }
+
+  // ---------------- scoring helpers ----------------
+  function entryFor(critId){
+    var e = state.currentAuditData.entries[critId];
+    if (!e){ e = { score: null, status: null, notes: '', action: '' }; state.currentAuditData.entries[critId] = e; }
+    return e;
+  }
+
+  function categoryStats(critList, entries){
+    var scored = [];
+    critList.forEach(function(c){
+      var e = entries[c.id];
+      if (e && e.score) scored.push(e.score);
+    });
+    var total = critList.length;
+    var avg = scored.length ? (scored.reduce(function(a,b){return a+b;},0) / scored.length) : 0;
+    return { avg: avg, done: scored.length, total: total };
+  }
+
+  function compositeStats(entries){
+    var allScored = [];
+    CRITERIA.forEach(function(c){
+      var e = entries[c.id];
+      if (e && e.score) allScored.push(e.score);
+    });
+    var avg = allScored.length ? (allScored.reduce(function(a,b){return a+b;},0) / allScored.length) : 0;
+    return { avg: avg, done: allScored.length, total: CRITERIA.length };
+  }
+
+  function scoreColor(avg){
+    if (avg === 0) return '#C9B8AE';
+    if (avg < 2) return '#6D0B0B';
+    if (avg < 3) return '#C30508';
+    if (avg < 4) return '#C69214';
+    return '#8A6D00';
+  }
+
+  function gradeForScore(avg){
+    if (avg >= 4.5) return { label: 'Gold Standard', icon: '\ud83c\udfc6', color: '#C69214' };
+    if (avg >= 3.5) return { label: 'Strong Performer', icon: '\ud83e\udd48', color: '#9AA0A6' };
+    if (avg >= 2.5) return { label: 'Solid Foundation', icon: '\ud83e\udd49', color: '#B5651D' };
+    if (avg >= 1.5) return { label: 'Needs Attention', icon: '\ud83d\udd27', color: '#6D0B0B' };
+    return { label: 'Critical Gaps', icon: '\ud83d\udea8', color: '#6D0B0B' };
+  }
+
+  function statusCounts(list, entries){
+    var counts = { found: 0, partial: 0, notfound: 0, none: 0 };
+    list.forEach(function(c){
+      var e = entries[c.id];
+      if (!e || !e.status) counts.none++;
+      else if (e.status === 'found') counts.found++;
+      else if (e.status === 'partial') counts.partial++;
+      else counts.notfound++;
+    });
+    return counts;
+  }
+
+  function categorySummaryLine(cat, list, entries){
+    var stats = categoryStats(list, entries);
+    var sc = statusCounts(list, entries);
+    var parts = [];
+    if (sc.found) parts.push(sc.found + ' Found');
+    if (sc.partial) parts.push(sc.partial + ' Partial');
+    if (sc.notfound) parts.push(sc.notfound + ' Not Found');
+    return stats.avg.toFixed(1) + '/5 avg \u2014 ' + (parts.length ? parts.join(', ') : 'not yet scored') + '.';
+  }
+
+  function overallSummaryText(d){
+    var overall = compositeStats(d.entries);
+    var grade = gradeForScore(overall.avg);
+    var catStats = CATEGORIES.map(function(cat){
+      var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+      return { cat: cat, stats: categoryStats(list, d.entries) };
+    });
+    var ranked = catStats.slice().sort(function(a,b){ return b.stats.avg - a.stats.avg; });
+    var strongest = ranked[0];
+    var weakest = ranked[ranked.length - 1];
+    return 'This program scored an overall ' + overall.avg.toFixed(1) + '/5 \u2014 ' + grade.label + '. ' +
+      'It performs strongest in ' + strongest.cat.name + ' (' + strongest.stats.avg.toFixed(1) + '/5), ' +
+      'and has the most room to grow in ' + weakest.cat.name + ' (' + weakest.stats.avg.toFixed(1) + '/5). ' +
+      'Across all 7 areas, ' + overall.done + ' of ' + overall.total + ' questions were scored.';
+  }
+
+  function generateAISummary(d){
+    state.generatingSummary = true;
+    render();
+
+    var catBreakdown = CATEGORIES.map(function(cat){
+      var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+      var stats = categoryStats(list, d.entries);
+      var notes = list.map(function(c){
+        var e = d.entries[c.id] || {};
+        return '  - ' + c.id + ' ' + c.name + ': score ' + (e.score || 'n/a') + '/5, observed: ' + (e.notes || 'none noted') + ', action: ' + (e.action || 'none noted');
+      }).join('\n');
+      return cat.name + ' (avg ' + stats.avg.toFixed(1) + '/5)\n' + notes;
+    }).join('\n\n');
+
+    var prompt = 'You are writing the executive summary for a loyalty program audit report for "' + (d.clientName || 'this program') + '". ' +
+      'Here is the full scoring breakdown by category, with observations and recommended actions:\n\n' + catBreakdown + '\n\n' +
+      'Write a tight, confident 3-4 sentence executive summary for a client-facing report. Lead with the overall verdict, ' +
+      'call out the single strongest area and the single biggest opportunity, and end with the general direction of the recommendation. ' +
+      'No bullet points, no headers, no preamble \u2014 just the paragraph itself.';
+
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    }).then(function(res){
+      if (!res.ok) throw new Error('API returned ' + res.status);
+      return res.json();
+    }).then(function(data){
+      var textBlocks = (data.content || []).filter(function(b){ return b.type === 'text'; }).map(function(b){ return b.text; });
+      var summary = textBlocks.join('\n').trim();
+      if (!summary) throw new Error('Empty response');
+      d.aiSummary = summary;
+      state.generatingSummary = false;
+      persistCurrentAudit();
+      render();
+    }).catch(function(err){
+      state.generatingSummary = false;
+      render();
+      showToast('Couldn\u2019t generate the AI summary \u2014 ' + (err && err.message ? err.message : 'try again'));
+    });
+  }
+
+  function generateSummaryText(){
+    var d = state.currentAuditData;
+    var comp = compositeStats(d.entries);
+    var lines = [];
+    lines.push('LOYALTY PROGRAM AUDIT \u2014 ' + (d.clientName || 'Untitled'));
+    lines.push('Composite score: ' + comp.avg.toFixed(1) + ' / 5  (' + comp.done + '/' + comp.total + ' criteria scored)');
+    lines.push('');
+    CATEGORIES.forEach(function(cat){
+      var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+      var stats = categoryStats(list, d.entries);
+      lines.push('== ' + cat.name + ' (' + cat.key + ') \u2014 ' + stats.avg.toFixed(1) + '/5 ==');
+      list.forEach(function(c){
+        var e = d.entries[c.id] || {};
+        var statusLabel = e.status ? STATUS_OPTIONS.filter(function(s){return s.key===e.status;})[0].label : 'Not scored';
+        lines.push('  ' + c.id + ' [' + (e.score || '-') + '/5, ' + statusLabel + '] ' + c.name);
+        if (e.notes) lines.push('    Notes: ' + e.notes);
+        if (e.action) lines.push('    Recommended action: ' + e.action);
+      });
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+
+  function suggestRecommendation(c, cat, e){
+    if (!e.notes || !e.notes.trim()){
+      showToast('Add what you observed first \u2014 the suggestion is based on that');
+      return;
+    }
+    if (e.action && e.action.trim()){
+      if (!confirm('Replace your current recommended action with an AI suggestion?')) return;
+    }
+    e._suggesting = true;
+    render();
+
+    var scoreLine = e.score ? ('The auditor scored this ' + e.score + '/5.') : 'This has not been scored yet.';
+    var statusLine = e.status ? ('Status marked: ' + e.status + '.') : '';
+    var prompt = 'You are helping fill out a loyalty program audit. Here is the criterion being assessed:\n\n' +
+      'Criterion: ' + c.name + ' (' + c.id + ', category: ' + cat.name + ')\n' +
+      'What it means: ' + (c.help ? c.help.what : c.name) + '\n\n' +
+      'Scoring rubric:\n' +
+      [1,2,3,4,5].map(function(n){ return n + ' \u2014 ' + c.rubric[n]; }).join('\n') + '\n\n' +
+      scoreLine + ' ' + statusLine + '\n\n' +
+      'What the auditor observed:\n"' + e.notes.trim() + '"\n\n' +
+      'Write ONE concise, specific, actionable recommendation (1-2 sentences max) for what the brand should do based on this observation. ' +
+      'Be concrete \u2014 name the specific fix, not a vague direction. If the observation already reflects a 5/5 best-in-class state, say there\'s nothing to change and briefly why it works. ' +
+      'Respond with ONLY the recommendation text, no preamble, no quotation marks, no markdown.';
+
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    }).then(function(res){
+      if (!res.ok) throw new Error('API returned ' + res.status);
+      return res.json();
+    }).then(function(data){
+      var textBlocks = (data.content || []).filter(function(b){ return b.type === 'text'; }).map(function(b){ return b.text; });
+      var suggestion = textBlocks.join('\n').trim();
+      if (!suggestion) throw new Error('Empty response');
+      e.action = suggestion;
+      e._suggesting = false;
+      persistCurrentAudit();
+      render();
+    }).catch(function(err){
+      e._suggesting = false;
+      render();
+      showToast('Couldn\u2019t generate a suggestion \u2014 ' + (err && err.message ? err.message : 'try again'));
+    });
+  }
+
+  function copySummary(){
+    var text = generateSummaryText();
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('Summary copied to clipboard'); }
+    catch(e){ showToast('Could not copy \u2014 try selecting manually'); }
+    document.body.removeChild(ta);
+  }
+
+  // ---------------- render ----------------
+  function h(tag, attrs, children){
+    var el = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function(k){
+      if (k === 'class') el.className = attrs[k];
+      else if (k === 'style') el.setAttribute('style', attrs[k]);
+      else if (k.indexOf('on') === 0) el.addEventListener(k.slice(2), attrs[k]);
+      else if (k === 'html') el.innerHTML = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function(c){
+      if (c == null) return;
+      if (typeof c === 'string') el.appendChild(document.createTextNode(c));
+      else el.appendChild(c);
+    });
+    return el;
+  }
+
+  function renderDashboard(root){
+    var wrap = h('div', { class: 'lat-dashboard' });
+    wrap.appendChild(h('div', { class: 'lat-dashboard-header' }, [
+      h('div', {}, [
+        h('h2', {}, ['\ud83d\udd0d Loyalty Program Audits']),
+        h('p', {}, ['Pick an app, poke around, and see what the loyalty program is really made of.'])
+      ]),
+      h('button', { class: 'lat-newbtn', onclick: function(){ state.showModal = true; state.modalName=''; render(); } }, ['+ Start a New Audit'])
+    ]));
+
+    if (state.audits.length === 0){
+      wrap.appendChild(h('div', { class: 'lat-empty' }, ['\ud83e\udd37 No audits yet \u2014 hit "Start a New Audit" and go snoop on someone\u2019s loyalty program.']));
+    } else {
+      state.audits.forEach(function(a){
+        var total = a.totalCount || CRITERIA.length;
+        var done = a.doneCount || 0;
+        var pct = total ? Math.round((done / total) * 100) : 0;
+        var card = h('div', { class: 'lat-audit-card', onclick: function(){ openAudit(a.id); } });
+        card.appendChild(h('div', {}, [
+          h('div', { class: 'name-row' }, [
+            h('div', { class: 'name' }, [a.clientName || 'Untitled audit']),
+            h('div', { class: 'pct-badge' + (pct === 100 ? ' complete' : '') }, [pct + '% done'])
+          ]),
+          h('div', { class: 'meta' }, [new Date(a.createdAt).toLocaleDateString()])
+        ]));
+        var cardActions = h('div', { class: 'lat-card-actions' });
+        if (pct === 100){
+          cardActions.appendChild(h('button', {
+            class: 'lat-view-summary-btn',
+            onclick: function(ev){ ev.stopPropagation(); openAudit(a.id, null, true); }
+          }, ['View Summary']));
+        }
+        cardActions.appendChild(h('button', { class: 'lat-del', onclick: function(ev){ deleteAudit(a.id, ev); } }, ['Delete']));
+        card.appendChild(cardActions);
+        wrap.appendChild(card);
+      });
+    }
+    root.appendChild(wrap);
+
+    if (state.showModal){
+      var backdrop = h('div', { class: 'lat-modal-backdrop', onclick: function(ev){ if(ev.target===backdrop){ state.showModal=false; render(); } } });
+      var input;
+      var modal = h('div', { class: 'lat-modal' }, [
+        h('h3', {}, ['\ud83d\udd0e New audit']),
+        h('p', {}, ['What app or program are we digging into?']),
+      ]);
+      input = h('input', { placeholder: 'e.g. Avion Rewards \u2014 iOS', oninput: function(e){ state.modalName = e.target.value; } });
+      input.value = state.modalName;
+      modal.appendChild(input);
+      modal.appendChild(h('div', { class: 'row' }, [
+        h('button', { onclick: function(){ state.showModal=false; render(); } }, ['Cancel']),
+        h('button', { class: 'primary', onclick: function(){
+          if (!state.modalName.trim()){ showToast('Needs a name before we dive in \ud83d\udc40'); return; }
+          state.showModal = false;
+          createAudit(state.modalName.trim());
+        } }, ['Let\'s go \u2192'])
+      ]));
+      backdrop.appendChild(modal);
+      root.appendChild(backdrop);
+      setTimeout(function(){ input.focus(); }, 30);
+    }
+  }
+
+  function renderScorecard(root, d){
+    var comp = compositeStats(d.entries);
+    var box = h('div', { class: 'lat-scorecard' });
+    box.appendChild(h('div', { class: 'lat-scorecard-top' }, [
+      h('h3', {}, ['\ud83d\udcca Composite Scorecard']),
+      h('button', { class: 'lat-copybtn', onclick: copySummary }, ['\ud83d\udccb Copy summary']),
+    ]));
+    box.appendChild(h('div', { class: 'lat-composite', style: 'margin-bottom:14px;color:' + scoreColor(comp.avg) }, [
+      comp.avg.toFixed(1), h('span', { class: 'of5' }, [' / 5  \u00b7 ' + comp.done + '/' + comp.total + ' scored'])
+    ]));
+    CATEGORIES.forEach(function(cat){
+      var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+      var stats = categoryStats(list, d.entries);
+      var row = h('div', { class: 'lat-bar-row' });
+      row.appendChild(h('div', { class: 'cat-label' }, [cat.key + ' \u00b7 ' + cat.name]));
+      var track = h('div', { class: 'lat-bar-track' });
+      track.appendChild(h('div', { class: 'lat-bar-fill', style: 'width:' + (stats.avg/5*100) + '%;background:' + cat.color }));
+      row.appendChild(track);
+      row.appendChild(h('div', { class: 'lat-bar-score' }, [stats.avg ? stats.avg.toFixed(1) : '\u2013']));
+      box.appendChild(row);
+    });
+    root.appendChild(box);
+  }
+
+  function renderSummaryView(root, d){
+    var overall = compositeStats(d.entries);
+    var grade = gradeForScore(overall.avg);
+
+    // controls (hidden on print)
+    var controls = h('div', { class: 'lat-summary-controls no-print' });
+    controls.appendChild(h('button', { class: 'lat-flip-btn', onclick: function(){ state.summaryMode = false; render(); } }, ['\u2190 Back to questions']));
+    controls.appendChild(h('button', { class: 'lat-flip-btn primary', style: 'background:var(--coke-red);border-color:var(--coke-red);', onclick: function(){
+      try {
+        window.print();
+      } catch (err){
+        showToast('Couldn\u2019t open the print dialog automatically \u2014 try Ctrl/Cmd+P instead');
+      }
+    } }, ['\ud83d\udda8\ufe0f Print / Save as PDF']));
+    controls.appendChild(h('div', { class: 'lat-print-hint no-print' }, ['If nothing opens, try Ctrl+P (Windows) or Cmd+P (Mac).']));
+    root.appendChild(controls);
+
+    var report = h('div', { class: 'lat-report' });
+
+    // header / gamified badge
+    var header = h('div', { class: 'lat-report-header' });
+    header.appendChild(h('div', { class: 'lat-report-title-row' }, [
+      h('div', {}, [
+        h('div', { class: 'lat-report-eyebrow' }, ['Final Audit Report']),
+        h('h1', {}, [d.clientName || 'Untitled audit']),
+        h('div', { class: 'lat-report-date' }, [new Date(d.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })])
+      ]),
+      h('div', { class: 'lat-report-badge', style: 'background:' + grade.color }, [
+        h('div', { class: 'lat-report-badge-icon' }, [grade.icon]),
+        h('div', { class: 'lat-report-badge-score' }, [overall.avg.toFixed(1) + '/5']),
+        h('div', { class: 'lat-report-badge-label' }, [grade.label])
+      ])
+    ]));
+    report.appendChild(header);
+
+    // overall summary
+    var summaryBox = h('div', { class: 'lat-report-summary' });
+    summaryBox.appendChild(h('div', { class: 'lat-report-summary-label' }, ['Program Summary']));
+    summaryBox.appendChild(h('p', { class: 'lat-report-summary-text' }, [d.aiSummary || overallSummaryText(d)]));
+    if (d.aiSummary){
+      summaryBox.appendChild(h('div', { class: 'lat-report-ai-tag no-print' }, ['\u2728 AI-generated executive summary']));
+    }
+    summaryBox.appendChild(h('button', {
+      class: 'lat-suggest-btn no-print' + (state.generatingSummary ? ' loading' : ''),
+      onclick: function(){ generateAISummary(d); }
+    }, [state.generatingSummary ? '\u2728 Writing\u2026' : (d.aiSummary ? '\u2728 Regenerate AI summary' : '\u2728 Generate AI executive summary')]));
+    report.appendChild(summaryBox);
+
+    // per-category sections
+    CATEGORIES.forEach(function(cat){
+      var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+      var stats = categoryStats(list, d.entries);
+
+      var divider = h('div', { class: 'lat-report-divider', style: 'background:' + cat.color });
+      divider.appendChild(h('div', { style: 'width:26px;height:44px;flex-shrink:0;', html: bottleIconSVG('#fff') }));
+      divider.appendChild(h('div', { style: 'flex:1;' }, [
+        h('div', { class: 'lat-report-divider-title' }, [cat.name]),
+        h('div', { class: 'lat-report-divider-sub' }, [categorySummaryLine(cat, list, d.entries)])
+      ]));
+      divider.appendChild(h('div', { class: 'lat-report-divider-score' }, [stats.avg.toFixed(1) + '/5']));
+      report.appendChild(divider);
+
+      list.forEach(function(c){
+        var e = d.entries[c.id] || {};
+        var statusLabel = e.status ? (STATUS_OPTIONS.filter(function(s){ return s.key === e.status; })[0] || {}).label : 'Not scored';
+        var row = h('div', { class: 'lat-report-row' });
+        row.appendChild(h('div', { class: 'lat-report-row-head' }, [
+          h('span', { class: 'lat-crit-id', style: 'background:' + cat.color }, [c.id]),
+          h('span', { class: 'lat-report-row-name' }, [c.name]),
+          h('span', { class: 'lat-report-row-score', style: 'color:' + cat.color }, [(e.score || '\u2013') + '/5']),
+          h('span', { class: 'lat-report-row-status' }, [statusLabel])
+        ]));
+        row.appendChild(h('div', { class: 'lat-report-row-detail' }, [
+          h('span', { class: 'lat-report-row-label' }, ['Observed: ']),
+          e.notes || h('em', {}, ['Not documented'])
+        ]));
+        row.appendChild(h('div', { class: 'lat-report-row-detail' }, [
+          h('span', { class: 'lat-report-row-label' }, ['Recommended action: ']),
+          e.action || h('em', {}, ['None specified'])
+        ]));
+        report.appendChild(row);
+      });
+    });
+
+    root.appendChild(report);
+  }
+
+  function renderCriterion(root, c, cat){
+    var e = entryFor(c.id);
+    var card = h('div', { class: 'lat-crit', style: '--crit-color:' + cat.color });
+    var head = h('div', { class: 'lat-crit-head' });
+    var titleBlock = h('div', {});
+    titleBlock.appendChild(h('div', { class: 'lat-crit-title-row' }, [
+      h('span', { class: 'lat-crit-id', style: 'background:' + cat.color }, [c.id])
+    ]));
+    titleBlock.appendChild(h('div', { class: 'lat-crit-name' }, [c.name]));
+    head.appendChild(titleBlock);
+    card.appendChild(head);
+
+    // help toggle
+    if (c.help){
+      var helpExpanded = !!state.expandedHelp[c.id];
+      card.appendChild(h('button', { class: 'lat-help-toggle', onclick: function(){ state.expandedHelp[c.id] = !helpExpanded; render(); } },
+        [helpExpanded ? '\u2715 Hide help' : '\ud83d\udca1 Need help with this one?']));
+      if (helpExpanded){
+        var hbox = h('div', { class: 'lat-help-box' });
+        hbox.appendChild(h('div', { class: 'lat-help-row' }, [
+          h('span', { class: 'lat-help-label' }, ['What\u2019s being asked']),
+          h('div', {}, [c.help.what])
+        ]));
+        hbox.appendChild(h('div', { class: 'lat-help-row' }, [
+          h('span', { class: 'lat-help-label' }, ['Example']),
+          h('div', {}, [c.help.example])
+        ]));
+        card.appendChild(hbox);
+      }
+    }
+
+    // score selector
+    var scoreRow = h('div', { class: 'lat-score-row' });
+    [1,2,3,4,5].forEach(function(n){
+      scoreRow.appendChild(h('button', {
+        class: 'lat-score-btn' + (e.score === n ? ' selected' : ''),
+        onclick: function(){
+          e.score = (e.score === n ? null : n);
+          persistCurrentAudit();
+          render();
+          var stats = categoryStats(CRITERIA.filter(function(cc){ return cc.cat === cat.key; }), state.currentAuditData.entries);
+          maybeCelebrate(state.currentAuditId, cat, stats);
+          var overall = compositeStats(state.currentAuditData.entries);
+          if (overall.done === overall.total && !state.celebratedComplete[state.currentAuditId]){
+            state.celebratedComplete[state.currentAuditId] = true;
+            fireConfetti('#C69214');
+            setTimeout(function(){ fireConfetti(cat.color); }, 250);
+            state.showCongratsModal = true;
+            render();
+          }
+        }
+      }, [String(n)]));
+    });
+    card.appendChild(scoreRow);
+    if (e.score){
+      scoreRow.appendChild(h('span', { class: 'lat-mood', key: e.score }, [SCORE_MOOD[e.score]]));
+    }
+
+    // rubric toggle
+    var expanded = !!state.expandedRubric[c.id];
+    card.appendChild(h('button', { class: 'lat-rubric-toggle', onclick: function(){ state.expandedRubric[c.id] = !expanded; render(); } },
+      [expanded ? 'Hide scoring rubric' : 'View scoring rubric']));
+    if (expanded){
+      var rbox = h('div', { class: 'lat-rubric-box' });
+      [1,2,3,4,5].forEach(function(n){
+        rbox.appendChild(h('div', { class: 'lat-rubric-line' + (e.score === n ? ' current' : '') }, [
+          h('span', { class: 'n mono' }, [n + '.']),
+          h('span', {}, [c.rubric[n]])
+        ]));
+      });
+      card.appendChild(rbox);
+    }
+
+    // status pills
+    var statusRow = h('div', { class: 'lat-status-row' });
+    STATUS_OPTIONS.forEach(function(s){
+      statusRow.appendChild(h('button', {
+        class: 'lat-status-pill' + (e.status === s.key ? ' selected ' + s.key : ''),
+        onclick: function(){ e.status = (e.status === s.key ? null : s.key); persistCurrentAudit(); render(); }
+      }, [s.label]));
+    });
+    card.appendChild(statusRow);
+
+    // notes
+    var notesField = h('div', { class: 'lat-field' }, [
+      h('label', {}, ['What was observed']),
+    ]);
+    var notesArea = h('textarea', { placeholder: 'Describe what you saw in the app/flow\u2026', oninput: function(ev){ e.notes = ev.target.value; persistCurrentAudit(); } });
+    notesArea.value = e.notes || '';
+    notesField.appendChild(notesArea);
+    card.appendChild(notesField);
+
+    // suggest recommendation button
+    var suggesting = !!e._suggesting;
+    card.appendChild(h('button', {
+      class: 'lat-suggest-btn' + (suggesting ? ' loading' : ''),
+      onclick: function(){ suggestRecommendation(c, cat, e); }
+    }, [suggesting ? '\u2728 Thinking\u2026' : '\u2728 Suggest a recommendation']));
+
+    // recommended action
+    var actionField = h('div', { class: 'lat-field' }, [
+      h('label', {}, ['Recommended action']),
+    ]);
+    var actionArea = h('textarea', { placeholder: 'What should change, if anything\u2026', oninput: function(ev){ e.action = ev.target.value; persistCurrentAudit(); } });
+    actionArea.value = e.action || '';
+    actionField.appendChild(actionArea);
+    card.appendChild(actionField);
+
+    card.appendChild(h('div', { class: 'lat-ai-note' }, ['\u2728 The recommendation suggestion above is AI-generated \u2014 review it before relying on it. Full AI-assisted screenshot scoring is planned for a later phase.']));
+
+    root.appendChild(card);
+  }
+
+  function renderAuditView(root, d){
+    var body = h('div', { class: 'lat-body' });
+
+    if (state.summaryMode){
+      var summaryMain = h('div', { class: 'lat-main lat-main-full' });
+      renderSummaryView(summaryMain, d);
+      body.appendChild(summaryMain);
+      root.appendChild(body);
+      return;
+    }
+
+    // sidebar
+    var sidebar = h('div', { class: 'lat-sidebar' });
+    sidebar.appendChild(h('button', { class: 'back', onclick: function(){ state.view = 'dashboard'; render(); } }, ['\u2190 All audits']));
+
+    var overall = compositeStats(d.entries);
+    var compositeBox = h('div', { class: 'lat-sidebar-composite' });
+    compositeBox.appendChild(h('div', { class: 'lat-sidebar-composite-top' }, [
+      h('span', {}, ['Composite']),
+      h('span', { class: 'mono', style: 'color:' + scoreColor(overall.avg) }, [overall.avg ? overall.avg.toFixed(1) : '\u2013', h('span', { style:'font-weight:400;color:var(--ink-soft);' }, ['/5'])])
+    ]));
+    var overallTrack = h('div', { class: 'lat-sidebar-composite-track' });
+    overallTrack.appendChild(h('div', { class: 'lat-sidebar-composite-fill', style: 'width:' + (overall.avg/5*100) + '%' }));
+    compositeBox.appendChild(overallTrack);
+    compositeBox.appendChild(h('div', { class: 'lat-sidebar-composite-sub' }, [overall.done + ' of ' + overall.total + ' questions scored']));
+    sidebar.appendChild(compositeBox);
+
+    var isComplete = overall.done === overall.total;
+    sidebar.appendChild(h('button', {
+      class: 'lat-summary-nav-btn' + (isComplete ? ' unlocked' : ' locked') + (state.summaryMode ? ' active' : ''),
+      onclick: function(){
+        if (!isComplete){ showToast('Score all ' + overall.total + ' questions to unlock the summary'); return; }
+        state.summaryMode = true; render();
+      }
+    }, [isComplete ? '\ud83c\udfc6 View Final Summary' : '\ud83d\udd12 Finish scoring to unlock summary']));
+
+    if (isComplete){
+      sidebar.appendChild(h('button', {
+        class: 'lat-summary-nav-btn lat-print-nav-btn',
+        onclick: function(){
+          state.summaryMode = true;
+          render();
+          try {
+            window.print();
+          } catch (err){
+            showToast('Couldn\u2019t open the print dialog automatically \u2014 try Ctrl/Cmd+P instead');
+          }
+        }
+      }, ['\ud83d\udda8\ufe0f Print Audit']));
+    }
+
+    CATEGORIES.forEach(function(cat){
+      var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+      var stats = categoryStats(list, d.entries);
+      var tab = h('div', {
+        class: 'lat-cat-tab' + (state.activeCat === cat.key && !state.summaryMode ? ' active' : ''),
+        onclick: function(){ state.activeCat = cat.key; state.summaryMode = false; render(); }
+      });
+      var topRow = h('div', { class: 'lat-cat-tab-toprow' });
+      topRow.appendChild(h('div', { style: 'width:20px;flex-shrink:0;', html: bottleIconSVG(cat.color) }));
+      topRow.appendChild(h('div', { class: 'label' }, [
+        h('div', { class: 'name' }, [cat.name]),
+        h('div', { class: 'code' }, [cat.key + (cat.sub ? ' \u00b7 ' + cat.sub : '')])
+      ]));
+      topRow.appendChild(h('div', { class: 'count' }, [stats.done + '/' + stats.total]));
+      tab.appendChild(topRow);
+
+      var metaRow = h('div', { class: 'lat-cat-tab-meta' }, [
+        h('span', {}, ['\u23f1\ufe0f ' + cat.time]),
+        h('span', { style: stats.done ? ('color:' + cat.color + ';font-weight:700;') : '' }, [stats.done ? stats.avg.toFixed(1) + '/5' : 'Not started'])
+      ]);
+      tab.appendChild(metaRow);
+
+      var dotsRow = h('div', { class: 'lat-cat-tab-dots' });
+      list.forEach(function(cc, i){
+        var ee = d.entries[cc.id];
+        var scored = ee && ee.score;
+        dotsRow.appendChild(h('span', {
+          class: 'lat-cat-tab-dot',
+          style: scored ? ('background:' + cat.color) : '',
+          onclick: function(ev){
+            ev.stopPropagation();
+            state.activeCat = cat.key;
+            state.critIndex[cat.key] = i;
+            state.summaryMode = false;
+            render();
+          }
+        }));
+      });
+      tab.appendChild(dotsRow);
+
+      sidebar.appendChild(tab);
+    });
+    body.appendChild(sidebar);
+
+    // main
+    var main = h('div', { class: 'lat-main' });
+
+    var cat = catByKey[state.activeCat];
+    var catHeader = h('div', { class: 'lat-cat-header', style: 'display:flex;align-items:flex-start;gap:14px;' }, [
+      h('div', { style: 'width:34px;height:60px;flex-shrink:0;margin-top:2px;', html: bottleIconSVG(cat.color, 'tilted') }),
+      h('div', {}, [
+        h('div', { class: 'eyebrow', style: 'color:' + cat.color }, [cat.key]),
+        h('h2', {}, [cat.name]),
+        h('div', { class: 'desc' }, [cat.desc]),
+        h('div', { class: 'lat-cat-time-chip', style: 'color:' + cat.color }, ['\u23f1\ufe0f Estimated time: ' + cat.time])
+      ])
+    ]);
+    main.appendChild(catHeader);
+
+    var list = CRITERIA.filter(function(c){ return c.cat === cat.key; });
+    if (state.critIndex[cat.key] == null) state.critIndex[cat.key] = 0;
+    var idx = state.critIndex[cat.key];
+    if (idx >= list.length) idx = list.length - 1;
+    if (idx < 0) idx = 0;
+    state.critIndex[cat.key] = idx;
+
+    var remaining = list.filter(function(cc){ var ee = d.entries[cc.id]; return !(ee && ee.score); }).length;
+
+    var progressBar = h('div', { class: 'lat-flip-progress' });
+    progressBar.appendChild(h('div', { class: 'lat-flip-position' }, ['Question ' + (idx + 1) + ' of ' + list.length]));
+    progressBar.appendChild(h('div', { class: 'lat-flip-remaining' + (remaining === 0 ? ' all-done' : '') }, [
+      remaining === 0 ? '\ud83c\udf89 All scored in this section' : remaining + ' question' + (remaining === 1 ? '' : 's') + ' remaining'
+    ]));
+    main.appendChild(progressBar);
+
+    // dot navigation
+    var dotsRow = h('div', { class: 'lat-flip-dots' });
+    list.forEach(function(cc, i){
+      var ee = d.entries[cc.id];
+      var scored = ee && ee.score;
+      dotsRow.appendChild(h('button', {
+        class: 'lat-flip-dot' + (i === idx ? ' current' : '') + (scored ? ' scored' : ''),
+        style: scored ? ('background:' + cat.color + ';border-color:' + cat.color) : '',
+        title: cc.id,
+        onclick: function(){ state.critIndex[cat.key] = i; render(); }
+      }, []));
+    });
+    main.appendChild(dotsRow);
+
+    renderCriterion(main, list[idx], cat);
+
+    // prev/next controls
+    var navRow = h('div', { class: 'lat-flip-nav' });
+    navRow.appendChild(h('button', {
+      class: 'lat-flip-btn' + (idx === 0 ? ' disabled' : ''),
+      onclick: function(){ if (idx > 0){ state.critIndex[cat.key] = idx - 1; render(); } }
+    }, ['\u2190 Previous']));
+    navRow.appendChild(h('button', {
+      class: 'lat-flip-btn primary' + (idx === list.length - 1 ? ' disabled' : ''),
+      style: 'background:' + cat.color + ';border-color:' + cat.color,
+      onclick: function(){ if (idx < list.length - 1){ state.critIndex[cat.key] = idx + 1; render(); } }
+    }, ['Next \u2192']));
+    main.appendChild(navRow);
+
+    renderScorecard(main, d);
+
+    body.appendChild(main);
+    root.appendChild(body);
+  }
+
+  function render(){
+    try {
+      renderInner();
+    } catch (err){
+      renderErrorBanner(err && err.message ? err.message : String(err));
+    }
+  }
+
+  function renderInner(){
+    var root = document.getElementById('lat-app');
+    root.innerHTML = '';
+
+    var topbar = h('div', { class: 'lat-topbar' }, [
+      h('div', { class: 'brandmark' }, [
+        h('div', {}, [
+          h('h1', {}, ['\ud83e\udd64 Loyalty Program Audit Calculator']),
+          h('div', { class: 'sub-row' }, [
+            h('div', { class: 'sub' }, [
+              state.view === 'audit' && state.currentAuditData
+                ? (state.currentAuditData.clientName || 'Untitled audit')
+                : 'Score it. Bottle up the results.'
+            ]),
+            (state.view === 'audit' && state.currentAuditData)
+              ? h('button', { class: 'lat-rename-btn', onclick: function(){ state.renameValue = state.currentAuditData.clientName || ''; state.showRenameModal = true; render(); } }, ['Rename'])
+              : null
+          ]),
+          (state.view === 'audit' && state.currentAuditData)
+            ? h('div', { class: 'sub-date' }, [new Date(state.currentAuditData.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })])
+            : null
+        ])
+      ]),
+    ]);
+    root.appendChild(topbar);
+
+    if (state.showRenameModal){
+      var rBackdrop = h('div', { class: 'lat-modal-backdrop', onclick: function(ev){ if(ev.target===rBackdrop){ state.showRenameModal=false; render(); } } });
+      var rInput;
+      var rModal = h('div', { class: 'lat-modal' }, [
+        h('h3', {}, ['Rename audit']),
+        h('p', {}, ['Give this audit a clearer name.']),
+      ]);
+      rInput = h('input', { placeholder: 'e.g. Avion Rewards \u2014 iOS', oninput: function(e){ state.renameValue = e.target.value; } });
+      rInput.value = state.renameValue;
+      rModal.appendChild(rInput);
+      rModal.appendChild(h('div', { class: 'row' }, [
+        h('button', { onclick: function(){ state.showRenameModal=false; render(); } }, ['Cancel']),
+        h('button', { class: 'primary', onclick: function(){
+          if (!state.renameValue.trim()){ showToast('Needs a name'); return; }
+          renameAudit(state.renameValue);
+        } }, ['Save'])
+      ]));
+      rBackdrop.appendChild(rModal);
+      root.appendChild(rBackdrop);
+      setTimeout(function(){ rInput.focus(); rInput.select(); }, 30);
+    }
+
+    if (state.showCongratsModal && state.currentAuditData){
+      var cOverall = compositeStats(state.currentAuditData.entries);
+      var cGrade = gradeForScore(cOverall.avg);
+      var cBackdrop = h('div', { class: 'lat-modal-backdrop', onclick: function(ev){ if(ev.target===cBackdrop){ state.showCongratsModal=false; render(); } } });
+      var cModal = h('div', { class: 'lat-modal lat-congrats-modal' }, [
+        h('div', { class: 'lat-congrats-badge', style: 'background:' + cGrade.color }, [cGrade.icon]),
+        h('h3', { style: 'text-align:center;font-size:20px;' }, ['\ud83c\udf89 Audit Complete!']),
+        h('p', { style: 'text-align:center;' }, ['Every question is scored. This program lands at ' + cOverall.avg.toFixed(1) + '/5 \u2014 ' + cGrade.label + '.']),
+        h('div', { class: 'row', style: 'justify-content:center;flex-wrap:wrap;' }, [
+          h('button', { onclick: function(){ state.showCongratsModal = false; render(); } }, ['Keep reviewing']),
+          h('button', { class: 'primary', onclick: function(){
+            state.showCongratsModal = false;
+            state.summaryMode = true;
+            render();
+          } }, ['\ud83c\udfc6 View Summary'])
+        ])
+      ]);
+      cBackdrop.appendChild(cModal);
+      root.appendChild(cBackdrop);
+    }
+
+    var wave = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    wave.setAttribute('viewBox', '0 0 1200 40');
+    wave.setAttribute('preserveAspectRatio', 'none');
+    wave.setAttribute('class', 'lat-ribbon-wave');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M0,10 C150,40 350,-10 600,15 C850,40 1050,-5 1200,15 L1200,0 L0,0 Z');
+    path.style.fill = 'var(--paper)';
+    wave.appendChild(path);
+    root.appendChild(wave);
+
+    if (!window._latBubblesSpawned){
+      window._latBubblesSpawned = true;
+      for (var bi = 0; bi < 14; bi++){
+        var bub = document.createElement('div');
+        var size = 6 + Math.random() * 14;
+        bub.className = 'lat-bubble';
+        bub.style.width = size + 'px';
+        bub.style.height = size + 'px';
+        bub.style.left = (Math.random() * 100) + 'vw';
+        bub.style.animationDuration = (6 + Math.random() * 8) + 's';
+        bub.style.animationDelay = (Math.random() * 8) + 's';
+        document.body.appendChild(bub);
+      }
+    }
+
+    if (state.view === 'dashboard'){
+      renderDashboard(root);
+    } else if (state.view === 'audit' && state.currentAuditData){
+      renderAuditView(root, state.currentAuditData);
+    }
+
+    if (state.toast){
+      root.appendChild(h('div', { class: 'lat-toast' }, [state.toast]));
+    }
+  }
+
+  function renderErrorBanner(msg){
+    var root = document.getElementById('lat-app');
+    var banner = document.createElement('div');
+    banner.setAttribute('style', 'position:fixed;top:0;left:0;right:0;background:#C53030;color:#fff;font-family:sans-serif;font-size:13px;padding:10px 16px;z-index:999;');
+    banner.textContent = 'Something went wrong: ' + msg + ' (try refreshing, or let me know what you did right before this).';
+    root.appendChild(banner);
+  }
+
+  window.addEventListener('error', function(ev){
+    renderErrorBanner(ev.message || 'unknown error');
+  });
+
+  // init
+  try {
+    render();
+    loadAuditsList();
+  } catch (err){
+    renderErrorBanner(err && err.message ? err.message : String(err));
+  }
+
+})();
+</script>
